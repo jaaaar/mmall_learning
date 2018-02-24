@@ -51,12 +51,12 @@
       <if test="checked != null" >
         checked,
       </if>
-      <if test="createTime != null" >
+
         create_time,
-      </if>
-      <if test="updateTime != null" >
+
+
         update_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -97,9 +97,7 @@
       <if test="checked != null" >
         checked = #{checked,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
+
       <if test="updateTime != null" >
         update_time = now(),
       </if>
@@ -112,8 +110,64 @@
       product_id = #{productId,jdbcType=INTEGER},
       quantity = #{quantity,jdbcType=INTEGER},
       checked = #{checked,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCartByUserIdProductId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM mmall_cart
+    WHERE user_id = #{userId}
+    and product_id = #{productId}
+  </select>
+
+  <select id="selectCartByUserId" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    where user_id = #{userId}
+  </select>
+  
+  <select id="selectCartProductCheckedStatusByUserId" resultType="int" parameterType="int">
+    SELECT count(1)
+    FROM mmall_cart
+    WHERE checked = 0 and user_id = #{userId}
+  </select>
+
+  <delete id="deleteByUserIdProductIds"  parameterType="map">
+    DELETE FROM mmall_cart
+    WHERE user_id = #{userId}
+    <if test="productIds != null">
+      and product_id in
+      <foreach collection="productIds" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </delete>
+
+  <update id="checkedOrUnCheckedProduct" parameterType="map">
+    UPDATE mmall_cart
+    SET checked = #{checked},
+    update_time = now()
+    where user_id = #{userId}
+    <if test="productId != null">
+      and product_id = #{productId}
+    </if>
+  </update>
+
+  <select id="selectCartProductCount" resultType="int" parameterType="int">
+    SELECT IFNULL(sum(quantity), 0)
+    AS count
+    FROM mmall_cart
+    WHERE user_id = #{userId}
+  </select>
+
+  <select id="selectCheckedCartByUserId" resultMap="BaseResultMap" parameterType="int">
+    select
+    <include refid="Base_Column_List" />
+    FROM  mmall_cart
+    where user_id = #{userId}
+    and checked = 1
+  </select>
 </mapper>

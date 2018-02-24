@@ -51,12 +51,12 @@
       <if test="sortOrder != null" >
         sort_order,
       </if>
-      <if test="createTime != null" >
+
         create_time,
-      </if>
-      <if test="updateTime != null" >
+
+
         update_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -97,9 +97,6 @@
       <if test="sortOrder != null" >
         sort_order = #{sortOrder,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateTime != null" >
         update_time = now(),
       </if>
@@ -112,8 +109,15 @@
       name = #{name,jdbcType=VARCHAR},
       status = #{status,jdbcType=BIT},
       sort_order = #{sortOrder,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
+
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectCategoryChildrenByParentId" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM mmall_category
+    where parent_id = #{parentId}
+  </select>
 </mapper>

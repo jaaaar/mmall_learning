@@ -84,12 +84,12 @@
       <if test="closeTime != null" >
         close_time,
       </if>
-      <if test="createTime != null" >
+
         create_time,
-      </if>
-      <if test="updateTime != null" >
+
+
         update_time,
-      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -172,9 +172,7 @@
       <if test="closeTime != null" >
         close_time = #{closeTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
+
       <if test="updateTime != null" >
         update_time = now(),
       </if>
@@ -194,8 +192,37 @@
       send_time = #{sendTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       close_time = #{closeTime,jdbcType=TIMESTAMP},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByUserIdAndOrderNum" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM mmall_order
+    where user_id = #{userId}
+    and order_no = #{orderNum}
+  </select>
+  
+  <select id="selectByOrderNum" parameterType="long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  mmall_order
+    WHERE order_no = #{orderNum}
+  </select>
+
+  <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM mmall_order
+    WHERE user_id = #{userId}
+    order by create_time desc
+  </select>
+
+  <select id="selectAllOrder" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM mmall_order
+    ORDER BY create_time desc
+  </select>
 </mapper>
