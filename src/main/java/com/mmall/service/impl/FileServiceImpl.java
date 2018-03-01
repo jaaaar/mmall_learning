@@ -3,6 +3,7 @@ package com.mmall.service.impl;
 import com.google.common.collect.Lists;
 import com.mmall.service.interf.IFileService;
 import com.mmall.util.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,8 @@ import java.util.UUID;
  * create by YuWen
  */
 @Service("iFileService")
+@Slf4j
 public class FileServiceImpl implements IFileService {
-
-    private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     //上传文件,并将上传文件的 文件名(经过处理的,给文件名加前缀)  返回出去
     //因为如果两个上传了同名文件,则原来的会被覆盖
@@ -27,7 +27,7 @@ public class FileServiceImpl implements IFileService {
         //获取文件扩展名(dog.jpg---->jpg)
         String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
         String uploadFileName = UUID.randomUUID().toString() + "." +fileExtensionName;
-        logger.info("开始上传文件,上传文件的文件名是:{},上传的路径是:{},新文件名是:{} " ,
+        log.info("开始上传文件,上传文件的文件名是:{},上传的路径是:{},新文件名是:{} " ,
                         fileName, path, uploadFileName);
         File fileDir = new File(path);      //声明目录文件
         if (!fileDir.exists()) {
@@ -43,7 +43,7 @@ public class FileServiceImpl implements IFileService {
             // 上传完之后,删除upload下面的文件
             targetFile.delete();
         } catch (IOException e) {
-            logger.error("上传文件异常", e);
+            log.error("上传文件异常", e);
             return null;
         }
         return targetFile.getName();

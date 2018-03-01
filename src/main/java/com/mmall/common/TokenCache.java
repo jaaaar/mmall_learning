@@ -3,6 +3,7 @@ package com.mmall.common;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * create by YuWen
  */
+@Slf4j
 public class TokenCache {
 
-    private static Logger logger = LoggerFactory.getLogger(TokenCache.class);
     public static final String TOKEN_PREFIX = "token_";
 
     //设置缓存的初始化容量1000  缓存最大容量为  当超出这个容量的时候guava会使用LRU(最少使用)算法来移除缓存项
@@ -44,7 +45,7 @@ public class TokenCache {
             }
             return value;
         } catch (ExecutionException e) {
-            logger.error("localCache get Error", e);
+            log.error("localCache get Error", e);
             return null;
         }
     }
