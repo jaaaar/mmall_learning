@@ -13,7 +13,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Date;
 
 /**
  * create by YuWen
@@ -25,7 +25,7 @@ public class JsonUtil {
 
     static {
         //对象的所有字段全部列入序列化
-        objectMapper.setSerializationInclusion(Inclusion.ALWAYS);
+        objectMapper.setSerializationInclusion(Inclusion.NON_EMPTY);
         //取消默认转换timestamps形式  (json序列化时会默认把DATE转换为TIMESTAMPS类型,现设置取消这种行为)
         objectMapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         //忽略空bean转json的错误
@@ -108,37 +108,41 @@ public class JsonUtil {
 
     public static void main(String[] args) {
         User user = new User();
-        user.setId(1);
-        user.setEmail("yuwen@gmail.com");
+//        user.setId(1);
+//        user.setEmail("yuwen@gmail.com");
+//        user.setCreateTime(new Date());
 
-        User user2 = new User();
-        user2.setId(2);
-        user2.setEmail("yuwenu2@gmail.com");
-
-        String userJson = JsonUtil.objToString(user);
         String userJsonPretty = JsonUtil.objToStringPretty(user);
+        log.info("userJson: {}", userJsonPretty);
 
-        log.info("userJson: {}", userJson);
-        log.info("userJsonPretty :{}", userJsonPretty);
-
-
-        User user1 = JsonUtil.stringToObj(userJson, User.class);
-
-
-        List<User> userList = Lists.newArrayList();
-        userList.add(user);
-        userList.add(user2);
-
-        String userListStr = JsonUtil.objToStringPretty(userList);
-
-        log.info("=====================================");
-        log.info(userListStr);
-
+//        User user2 = new User();
+//        user2.setId(2);
+//        user2.setEmail("yuwenu2@gmail.com");
+//
+//        String userJson = JsonUtil.objToString(user);
+//        String userJsonPretty = JsonUtil.objToStringPretty(user);
+//
+//        log.info("userJson: {}", userJson);
+//        log.info("userJsonPretty :{}", userJsonPretty);
+//
+//
+//        User user1 = JsonUtil.stringToObj(userJson, User.class);
+//
+//
+//        List<User> userList = Lists.newArrayList();
+//        userList.add(user);
+//        userList.add(user2);
+//
+//        String userListStr = JsonUtil.objToStringPretty(userList);
+//
+//        log.info("=====================================");
+//        log.info(userListStr);
+//
 //        List<User> userListObj1 = JsonUtil.stringToObj(userListStr, new TypeReference<List<User>>(){});
-        List<User> userListObj1 = JsonUtil.stringToObj(userListStr, new TypeReference<List<User>>() {
-        });
+//        List<User> userListObj1 = JsonUtil.stringToObj(userListStr, new TypeReference<List<User>>() {
+//        });
 
-        List<User> userListObj2 = JsonUtil.stringToObj(userListStr, List.class, User.class);
+//        List<User> userListObj2 = JsonUtil.stringToObj(userListStr, List.class, User.class);
         System.out.println("end");
     }
 

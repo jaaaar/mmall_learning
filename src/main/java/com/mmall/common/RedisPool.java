@@ -52,12 +52,5 @@ public class RedisPool {
         pool.returnBrokenResource(jedis);
     }
 
-    public static void main(String[] args) {
-        Jedis jedis = pool.getResource();
-        jedis.set("key", "value");
-        returnResource(jedis);
 
-        pool.destroy();         //临时调用销毁连接池中的所有连接
-        System.out.println("program is end");
-    }
 }

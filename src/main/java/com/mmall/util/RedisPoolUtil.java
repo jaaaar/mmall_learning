@@ -100,13 +100,4 @@ public class RedisPoolUtil {
     }
 
 
-    public static void main(String[] args) {
-        Jedis jedis = RedisPool.getJedis();
-        RedisPoolUtil.set("KeyTest", "value");
-        String value = RedisPoolUtil.get("KeyTest");
-        RedisPoolUtil.setEx("keyex", "valueex", 60 * 10);
-        RedisPoolUtil.expire("KeyTest", 60 * 20);
-        RedisPoolUtil.del("KeyTest");
-        System.out.println("end");
-    }
 }
