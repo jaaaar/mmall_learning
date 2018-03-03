@@ -1,6 +1,7 @@
 package com.mmall.common;
 
 import com.mmall.util.PropertiesUtil;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -14,6 +15,16 @@ public class RedisPool {
     private static Integer maxTotal = PropertiesUtil.getIntProperty("redis.max.total", 20);//最大连接数
     private static Integer maxIdle = PropertiesUtil.getIntProperty("redis.max.idle", 10);//Jedis连接池中最多有多少个状态为Idel(空闲)的jedis实例
     private static Integer minIdle = PropertiesUtil.getIntProperty("redis.min.idle", 2);//Jedis连接池中最少有多少个状态为Idel(空闲)的jedis实例
+
+//    private static Integer maxTotal = Integer.valueOf(PropertiesUtil.getProperty("redis.max.total", "20"));
+//    private static Integer maxIdle = Integer.valueOf(PropertiesUtil.getProperty("redis.max.idle", "10"));
+//    private static Integer minIdle = Integer.valueOf(PropertiesUtil.getProperty("redis.min.idle", "2"));
+//    private static Boolean testOnBorrow = Boolean.valueOf(PropertiesUtil.getProperty("redis.test.borrow", "false"));
+//    private static Boolean testOnReturn = Boolean.valueOf(PropertiesUtil.getProperty("redis.test.return", "false"));
+//    private static String redisIp = PropertiesUtil.getProperty("redis.ip");
+//    private static Integer redisPort = Integer.valueOf(PropertiesUtil.getProperty("redis.port"));
+
+
     /*在jedis连接池中取出实例时(和redis server进行通信)是否要进行验证操作,如果赋值为true则得到的jedis实例为可用的*/
     private static Boolean testOnBorrow = PropertiesUtil.getBooleanProperty("redis.test.borrow", false);
     /*在jedis连接池中还回实例时(和redis server进行通信)是否要进行验证操作,如果赋值为true则放回jedis pool的jedis实例为可用的*/

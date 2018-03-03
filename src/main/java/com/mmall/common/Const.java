@@ -13,6 +13,10 @@ public class Const {
     public static final String USERNAME = "username";
     public static final String EMAIL = "email";
 
+    public interface RedisCacheExTime{
+        int REDIS_SESSION_EXTIME = 60 * 30; //30分钟
+    }
+
     public interface ProductListOrderBy {
         //set的contains的时间复杂度是  O(1)  List的是O(n)
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_asc", "price_desc");
