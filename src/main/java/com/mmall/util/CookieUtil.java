@@ -17,6 +17,22 @@ public class CookieUtil {
     private final static String COOKIE_NAME= "mmall_login_token";
 
 
+    /**
+     * X:domain="happymmall."
+     *
+     * a 站点:A,happymmall.com            cookie:domain=A.happymmall.com; path="/"
+     * b 站点:B.happymmall.com            cookie:domain=B.happymmall.com; path="/"
+     * c 站点:A.happymmall.com/test/cc    cookie:domain=A.happymmall.com; path="/test/cc"
+     * d 站点:A.happymmall.com/test/dd    cookie:domain=A.happymmall.com; path="/test/dd"
+     * e 站点:A.happymmall.com/test       cookie:domain=A.happymmall.com; path="/test"
+     *
+     * a和 b 因为二级域名不同所以cookie不能共享
+     * c和 d cookie不能共享  但是c 和 d 可以共享 a 的cookie, 也可以共享e 的cookie
+     *
+     * @param response
+     * @param token
+     */
+
     //写入登录cookie
     public static void writeLoginToken(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
