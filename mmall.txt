@@ -205,7 +205,143 @@ Session 登录信息存储及读取问题,
     缺点:(1)导致负载均衡不平均(因为完全依赖ip hash的结果)   (2)在ip变化的情况下(用户动态ip)无法访问
 服务器定时任务并发的问题
 
-
-
-
 时间戳 1970 1 1到当前时间的毫秒数
+
+
+
+
+
+
+===================================================================================================
+                                    Redis分布式
+===================================================================================================
+
+
+
+
+redis分布式算法原理
+
+    (1)传统分布式算法
+        设有一图片test.jpg, 同时也有三台服务器分别为0 , 1 , 2
+        此时对 test.jpg 进行 hash :hash(test.jpg) 然后用此散列值对 3 取模
+        hash(test.jpg) % 3   (结果值只可能为 0 (则存在0的服务节点), 1(则存在1 的服务节点) , 2 (同理))
+
+        此时假设有4个redis节点:redis0, redis1, redis2, redis3
+        20个数据 (1 ~ 20 )  假设这20个数据都是 经过hash后的散列值
+        因为有4个redis节点  所以此时20个数据分别对4取模,  可得如下结果
+
+        redis0:      4   8   12  16  20
+        redis1:      1   5   9   13  17
+        redis2:      2   6   10  14  18
+        redis3:      3   7   11  15  19
+
+        此时再假设要对redis节点进行 增加 或者 删除 (此例增加节点,变为5个)     变为如下结果
+        redis0:     5   10  15  20
+        redis1:     1   6   11  16
+        redis2:     2   7   12  17
+        redis3:     3   8   13  18
+        redis4:     4   9   14  19
+
+        可以发现数据 (1, 2, 3, 20)在增加节点后存储的服务器没有变化    即只有这四个数据还可以获得访问
+        即在redis0 服务器中 只有数据 20依然可以命中
+        即在redis1 服务器中 只有数据 1依然可以命中
+        即在redis2 服务器中 只有数据 2依然可以命中
+        即在redis3 服务器中 只有数据 23依然可以命中
+        得出命中率为  4 / 20 = 20%
+
+
+
+    (2)Consistent hashing 一致性算法原理
+        首先理解一个环形hssh空间,通常 hash算法都是将value应设在一个32位的key值当中
+        此时将这个32位的 key 首尾相连变成一个环形        此key值的取值范围不难理解为 0 ~  2E32-1
+        此时再将对象映射到此环形hash空间上   考虑四个对象 object1 ~ object4
+        通过hash函数计算出这四个对象的hash值 key   这四个key值都可以落在环形hash空间上
+        接下来将 cache 映射到hash空间上
+            基本思想就是讲对象和cache都映射到同一个hash数值空间中,并且使用相同的hash算法
+            hash(cacheA) = keyA
+            hash(cacheB) = keyB
+            hash(cacheC) = keyC
+            此时cache和对象已经经过相同的hash算法被映射到一个环形hash空间上
+            此时考虑 如何将对象映射到cache上
+            我们可以设置让环形空间上的对象顺时针发现的第一个cache节点进行映射
+            这样可以保证在增加和删除节点时对数据的影响变小
+            (新增节点(只会影响新增节点和逆时针第一个节点之间的数据),
+             删除节点(只会影响被删除节点和逆时针第一个节点之间的数据))
+
+
+    (3)hash 倾斜性
+        经过Consistent hashing算法后理想情况下不错,但是可能经过hash算法之后 (假设有三个cache节点)
+        这三个cache节点可能距离非常近   则其中一个节点服务器压力会很大  而其他两个节点基本感觉不到压力
+        这就是由于 hash 倾斜性导致的
+
+
+    (4)虚拟节点
+        解决hash倾斜性带来的问题
+        此时假设有两个对象object1, object2 对这两个对象分别进行hash
+        有虚拟节点 v1 ~ v6
+        假设经过hash之后 object1落在了v2这个虚拟节点上面
+                       object2落在了v5这个虚拟节点上面
+        此时对虚拟节点进行rehash  即再次取一次hash
+        假设此时v1,v2落在了真实节点N1上 , v3, v4落在了真实节点N2上,  v5, v6落在了真实节点上N3上
+        即通过虚拟节点把真实节点进行一个放大  (此时object1存在了N1上, object2存在了N3上)
+
+
+    (5)Consistent hashing 命中率
+        公式: (1 - n/(n + m)) * 100%      n:服务器台数   m:新增的服务器台数
+
+redis分布式环境配置
+    启动两个不同端口的redis
+
+redis分布式客户端及服务端启动
+    修改redis.windows.conf文件  指定端口  启动
+封装分布式 Shared Redis API
+    见com.mmall.common.RedisShardedPool
+Redis分布式环境验证
+    RedisShardedPool  中main 方法
+集群和分布式概念详解
+
+
+
+
+
+
+==================================================================================================
+                                         单点登录
+==================================================================================================
+Spring Session实现单点登录
+
+(1)Spring Session简介
+    Spring Session是Spring的项目之一
+    Spring Session提供了一套创建和管理Servlet  HttpSession的方案
+    Spring Session提供了集群Session(Clustered Sessions)功能
+    默认采用外置的Redis来存储Session数据,以此来解决Session共享问题
+
+(2)Spring Session官方地址文档源码
+    源码: github.com/spring-projects/spring-session
+         Spring Session 1.2.x官方demo
+
+(3)Spring Session项目集成
+
+
+(4)Redis Desktop Manager介绍及使用
+
+(5)Spring Session源码解析
+    DelegatingFilterProxy
+
+    DefaultCookieSerializer
+
+    SessionRepositoryFilter
+
+    RedisOperationSessionRepository
+
+    AbstractHttpSessionApplicationInitializer
+
+    SessionRepositoryRequestWrapper
+
+    SessionRepositoryResponseWrapper
+
+    CookieHttpSessionStrategy
+
+
+
+
