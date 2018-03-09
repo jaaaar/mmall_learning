@@ -48,4 +48,8 @@ public class DateTimeUtil {
         return dateTime.toString(STANDARD_FORMAT);
     }
 
+    public static void main(String[] args) {
+        System.out.println(strToDate("2018-02-15 11:21:00"));
+    }
+
 }
