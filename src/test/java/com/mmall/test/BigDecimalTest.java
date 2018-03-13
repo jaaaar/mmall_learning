@@ -14,6 +14,12 @@ import java.math.BigDecimal;
 public class BigDecimalTest {
 
     @Test
+    public void string() {
+        String s = "course.png.png";
+        System.out.println(s.substring(s.lastIndexOf(".") + 1));
+    }
+
+    @Test
     public void test1() {
         System.out.println(0.05 + 0.01);
         System.out.println(1.0 - 0.42);
@@ -67,5 +73,6 @@ public class BigDecimalTest {
 
     @Test
     public void tow() {
+        System.out.println(1 == 1.0);
     }
 }

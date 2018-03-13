@@ -30,6 +30,7 @@ import com.mmall.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -605,6 +606,32 @@ public class OrderServiceImpl implements IOrderService {
             }
         }
         return ServerResponse.createByErrorMessage("订单不存在");
+    }
+
+    @Override
+    public void closeOrder(int hour) {
+        Date closeDateTime = DateUtils.addHours(new Date(), -hour);
+        List<Order> orderList = orderMapper.selectOrderStatusByCreatetime(
+                Const.OrderStautsEnum.NO_PAY.getCode(), DateTimeUtil.dateToStr(closeDateTime));
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNum(order.getOrderNo());
+            for (OrderItem orderItem : orderItemList) {
+                //一定要用主键进行where查找,防止锁表,同时要使用支持锁的InnoDB引擎
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+                //考虑已生成的订单里面的商品被删除的情况
+                if (stock == null) {
+                    //下完单后,产品被后台删除了
+                    continue;
+                }
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                //将被关闭订单中的商品的数量进行增加
+                product.setStock(stock + orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            int resultCount = orderMapper.closeOrderByOrderId(order.getId());
+            log.info("关闭订单 orderNO:{}", order.getOrderNo());
+        }
     }
 
 

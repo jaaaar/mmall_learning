@@ -345,3 +345,57 @@ Spring Session实现单点登录
 
 
 
+
+
+    ================================   Spring Schedule  ==========================================
+
+    Spring Schedule
+        用作作业调度,如定时任务(jdk原生提供了Timer,Task等类进行处理定时任务)
+
+    Spring Schedule Cron表达式
+        Cron表达式格式：秒分时日月周年(可选)
+                Seconds, Minutes, Hours, Day-of-Month, Month,     Day-of-Week,        Year(可选字段)
+        允许的值: 0-59      0-59    0-23    1-31    1-12或Jan-Dec    1-7或SUN-SAT     空值或者1970-2099
+    允许的特殊字符: ,-*/     同       同      同和?LWC      同           ?LC#                   同
+    Spring Schedule Cron生成器
+
+    Spring Schedule配置
+
+    MySQL表锁 行锁
+
+        先使用FOR UPDATE 悲观锁
+
+        SELECT ... FOR UPDATE(悲观锁)
+        需要使用InnoDB引擎
+        Row-Level Lock(明确的主键)       会产生行锁
+        Table-Level Lock(无明确的主键)   会产生表锁
+
+
+
+        例mmall_product表,有id 和 name, 其中id为主键
+
+      Case1:
+        明确指定主键,并且有结果集,Row-Level Lock
+        SELECT * FROM mmall_product WHERE id = '666' FOR UPDATE;
+        id是明确的主键,并且在mmall_product表中有这个666的数据则会产生行锁
+
+
+      Case2:
+        明确指定主键,并且无结果集,无Lock
+        SELECT * FROM mmall_product WHERE id = '-100' FOR UPDATE;
+        id是明确的主键,但是在mmall_product表中没有-100的这条数据,则不会上锁
+
+      Case3:
+        无主键Table-Level Lock
+        SELECT * FROM mmall_product WHERE name = 'iphone' FOR UPDATE;
+        未明确指定主键, 会产生表锁
+
+      Case4:有主键但是主键不明确
+        SELECT * FROM mmall_product WHERE id != '66' FOR UPDATE;
+        虽然有主键但是主键不明确,会产生表锁
+        SELECT * FROM mmall_product WHERE id LIKE '%66%' FOR UPDATE;
+        依然是虽然有主键但是主键不明确,依然会产生表锁
+
+
+
+

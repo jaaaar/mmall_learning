@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public interface IOrderService {
 
+    //portal
+
     ServerResponse pay(Long orderNum, Integer userId, String path);
 
     ServerResponse aliCallBack(Map<String, String> params);
@@ -27,6 +29,9 @@ public interface IOrderService {
 
     ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize);
 
+
+    //backend
+
     ServerResponse<PageInfo> manageList(int pageNum, int pageSize);
 
     ServerResponse<OrderVo> manageDetail(Long orderNo);
@@ -34,4 +39,10 @@ public interface IOrderService {
     ServerResponse<PageInfo> manageSearch(Long orderNo, int pageNum, int pageSize);
 
     ServerResponse<String> manageSendGoods(Long orderNo);
+
+
+
+    //timer task
+    //hour个小时未付款的订单进行关闭
+    void closeOrder(int hour);
 }

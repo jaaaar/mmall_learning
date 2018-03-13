@@ -36,6 +36,10 @@ public class UserSpringSessionController {
     public ServerResponse<User> login(@RequestParam("username") String username,
                                       @RequestParam("password") String password,
                                       HttpSession session) {
+        //测试全局异常
+       /* int i = 0;
+        int j = 6 / i;*/
+
         ServerResponse<User> response =  iUserService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, response.getData());
