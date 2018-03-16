@@ -398,4 +398,51 @@ Spring Session实现单点登录
 
 
 
+    ================================= Redis分布式锁  ===============================================
 
+    redis分布式锁原理解析
+    保证在执行定时任务时,只有一台机器执行  其他服务器不必执行
+
+        (1)redis分布式锁相关命令
+        1.setnx(是set not exist的缩写)也就是说只有不存在的时候setnx才会设置成功(具有原子性)
+        2.getset(先get再set)获取旧的值 设置新的值(具有原子性)
+        3.expire    设置键的有效期
+        4.del       删除
+
+        (2)与时间戳的结合
+
+        (3)Redis分布式锁的流程
+            setnx(lockKey, currentTime+timeout) currentTime:时间戳     timeOut:锁被动释放的一个时间
+            若获取锁成功,即返回1
+                expire(lockKey)-->业务-->del(lockKey)-->释放锁
+            若获取锁失败,即返回0
+                结束
+        (4)Redis分布式锁优化版流程
+            setnx(lockKey, currentTime+timeout) currentTime:时间戳     timeOut:锁被动释放的一个时间
+                        若获取锁成功,即返回1
+                            expire(lockKey)-->业务-->del(lockKey)-->释放锁
+                        若获取锁失败,即返回0
+                            get(lockKey)获取到最开始设置的currentTime+timeout (假设为lockValueA)
+                            若   lockValueA != null && currentTime > lockValueA
+                                getset(lockKey, currentTime + timeout)
+                                返回 lockValueB == null || lockValueA == lockValueB
+                                则调用获取锁成功中的expire
+                                否则结束
+
+                            否则
+                                结束
+
+
+
+
+
+
+Spring Schedule + Redis分布式锁构建分布式任务调度
+
+    多进程debug
+
+    内存解析,流程解析
+
+    了解Redis分布式锁如何预防死锁
+
+    Redis分布式锁双重防死锁演进
