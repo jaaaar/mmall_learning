@@ -37,6 +37,7 @@ public class CloseOrderTask {
     /**
      * Redis分布式锁
      */
+    @Scheduled(cron = "0 */1 * * * ?")  //每分钟(每个分钟的整数倍)执行一次
     public void closeOrderTaskV2(){
         log.info("关闭订单定时任务启动");
         //锁超时时间
@@ -61,7 +62,7 @@ public class CloseOrderTask {
 
         int hour = Integer.parseInt(
                 PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
-        iOrderService.closeOrder(hour);
+//        iOrderService.closeOrder(hour);
         RedisSharededPoolUtil.del(lockName);
         log.info("释放:{},ThreadName:{}",lockName, Thread.currentThread().getName());
         log.info("=====================================================");
