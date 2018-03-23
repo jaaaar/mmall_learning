@@ -1,6 +1,7 @@
 package com.mmall.util;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mmall.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,8 @@ import org.codehaus.jackson.type.TypeReference;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * create by YuWen
@@ -25,7 +28,7 @@ public class JsonUtil {
 
     static {
         //对象的所有字段全部列入序列化
-        objectMapper.setSerializationInclusion(Inclusion.NON_EMPTY);
+        objectMapper.setSerializationInclusion(Inclusion.ALWAYS);
         //取消默认转换timestamps形式  (json序列化时会默认把DATE转换为TIMESTAMPS类型,现设置取消这种行为)
         objectMapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         //忽略空bean转json的错误
@@ -107,13 +110,36 @@ public class JsonUtil {
 
 
     public static void main(String[] args) {
+        List<User> userList = Lists.newArrayList();
+        Map<String, User> map = Maps.newHashMap();
         User user = new User();
-//        user.setId(1);
-//        user.setEmail("yuwen@gmail.com");
-//        user.setCreateTime(new Date());
+        user.setId(1);
+        user.setEmail("yuwen@gmail.com");
+        user.setCreateTime(new Date());
+        User user2 = new User();
+        user2 = user;
+        userList.add(user);
+        userList.add(user2);
+        map.put("user", user);
+        map.put("user2", user2);
+        String userStrList = JsonUtil.objToString(map);
+        System.out.println(userStrList);
+        System.out.println(JsonUtil.stringToObj(userStrList, Map.class));
+        System.out.println(JsonUtil.stringToObj(userStrList, new TypeReference<Map<String, User>>() {
+        }));
 
-        String userJsonPretty = JsonUtil.objToStringPretty(user);
-        log.info("userJson: {}", userJsonPretty);
+
+        System.out.println("=======================");
+        String userListStrPretty = JsonUtil.objToStringPretty(map);
+        System.out.println(userListStrPretty);
+        System.out.println(JsonUtil.stringToObj(userListStrPretty, Map.class));
+        System.out.println(JsonUtil.stringToObj(userListStrPretty, new TypeReference<Map<String, User>>() {
+        }));
+        System.out.println((Map<String, User>) JsonUtil.stringToObj(userListStrPretty, Map.class, String.class, User.class));
+
+
+//        String userJsonPretty = JsonUtil.objToStringPretty(user);
+//        log.info("userJson: {}", userJsonPretty);
 
 //        User user2 = new User();
 //        user2.setId(2);
@@ -143,7 +169,7 @@ public class JsonUtil {
 //        });
 
 //        List<User> userListObj2 = JsonUtil.stringToObj(userListStr, List.class, User.class);
-        System.out.println("end");
+//        System.out.println("end");
     }
 
 
