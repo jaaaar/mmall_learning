@@ -51,12 +51,29 @@
 
 
 
+    <!--Spring2.0后除了singleton和prototype又加入了request,session,globalSession三个作用域
+        如果要让容器中某个bean拥有这三个新的作用域中的一个，除了在bean中配置相应的scope外，还必须在容器级
+        作此初始化配置-->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
+
+    <!--
+
+        ContextLoaderListener extends ContextLoader implements ServletContextListener
+
+        ServletContextListener extends EventListener
+
+        ServletContextListener只负责监听web容器的启动和关闭事件
+
+        ContextLoaderListener(或ContextLoaderServlet) 将web容器与spring容器整合
+
+    -->
+
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <!--Spring配置文件的声明，若不显示声明，则默认为WEB-INF/applicationContext.xml-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>

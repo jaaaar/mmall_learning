@@ -1,6 +1,6 @@
 package com.mmall.util;
 
-import java.io.UnsupportedEncodingException;
+
 import java.security.MessageDigest;
 
 /**

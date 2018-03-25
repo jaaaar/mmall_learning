@@ -22,14 +22,17 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
 
+    <!--aop使用aspectj自动代理-->
     <aop:aspectj-autoproxy/>
 
-    <!---->
+    <!--读取配置文件，location指定配置文件路径-->
     <context:property-placeholder location="classpath:datasource.properties" />
 
+    <!--支持定时任务注解-->
     <task:annotation-driven />
 
 
+    <!--引入其他配置文件-->
     <import resource="applicationContext-datasource.xml" />
     <import resource="applicationContext-spring-session.xml" />
 

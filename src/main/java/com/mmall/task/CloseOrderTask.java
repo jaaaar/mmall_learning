@@ -4,7 +4,6 @@ import com.mmall.common.Const;
 import com.mmall.service.interf.IOrderService;
 import com.mmall.util.PropertiesUtil;
 import com.mmall.util.RedisSharededPoolUtil;
-import com.sun.scenario.effect.Crop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
