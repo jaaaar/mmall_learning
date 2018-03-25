@@ -1,5 +1,6 @@
 package com.mmall.common;
 
+
 import com.mmall.util.PropertiesUtil;
 import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
@@ -8,10 +9,12 @@ import redis.clients.util.Sharded;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * create by YuWen
  */
 public class RedisShardedPool {
+
 
     //    private static JedisPool pool;      //设置为static 保证jedis连接池在tomcat启动时就被加载进来
     private static ShardedJedisPool pool;   //shareded jedis 连接池
@@ -83,6 +86,7 @@ public class RedisShardedPool {
 //        pool.destroy();
         System.out.println("Program is end");
     }
+
 
 
 }
