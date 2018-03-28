@@ -1,11 +1,13 @@
 package com.mmall.test;
 
+import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * create by YuWen
@@ -13,6 +15,9 @@ import java.math.BigDecimal;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class BigDecimalTest {
 
+
+
+    Map<Integer, String> map = Maps.newHashMap();
     @Test
     public void string() {
         String s = "course.png.png";

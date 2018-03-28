@@ -17,6 +17,27 @@
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task.xsd">
 
+    <!--
+           相当于<context:component-scan base-package="com.mmall"/>
+           和<context:annotation-config />
+
+           <context:annotation-config />作用是向Spring容器注册
+
+      (1)  org.springframework.beans.factory.annotation包下的
+           AutowiredAnnotationBeanPostProcessor  对@Autowired(byType)注解进行解析，使注解起作用
+
+      (2)  org.springframework.context.annotation包下的
+           CommonAnnotationBeanPostProcessor     对JSR-250规范的注解如：
+                                                 @Resource(byName),@PostConstruct,@PreDestroy等
+                                                 注解进行解析，使注解起作用
+
+      (3)  org.springframework.orm.jpa.support包下的(未导入orm包也不会报错)
+           PersistenceAnnotationBeanPostProcessor 对@persistenceContext注解进行解析，使注解起作用
+
+      (4)  org.springframework.beans.factory.annotation包下的
+           RequiredAnnotationBeanPostProcessor      对@Required注解进行解析，使注解起作用
+
+    -->
     <context:component-scan base-package="com.mmall" annotation-config="true">
         <!--Spring扫描bean  排除带有Controller注解的bean-->
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
