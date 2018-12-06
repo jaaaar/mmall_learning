@@ -18,7 +18,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,17 +27,6 @@ import java.util.List;
 @Service("iCartService")
 public class CartServiceImpl implements ICartService{
 
-    @PostConstruct
-    public void test() {
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-        System.out.println("666666666666666");
-    }
-
     @Autowired
     private CartMapper cartMapper;
 
@@ -46,7 +34,6 @@ public class CartServiceImpl implements ICartService{
     private ProductMapper productMapper;
 
     //向购物车中添加商品
-    @Override
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
 
         if (productId == null || count == null) {
@@ -73,7 +60,6 @@ public class CartServiceImpl implements ICartService{
     }
 
     //购物车中更新商品
-    @Override
     public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
         if (productId == null || count == null) {
             return ServerResponse.createByErrorCodeMessage(
@@ -88,7 +74,6 @@ public class CartServiceImpl implements ICartService{
     }
 
     //购物车中删除商品  需要删除的商品之间用" , " 分割
-    @Override
     public ServerResponse<CartVo> delete(Integer userId, String productIds) {
         List<String> productList = Splitter.on(",").splitToList(productIds);
         if (CollectionUtils.isEmpty(productList)) {
@@ -100,21 +85,18 @@ public class CartServiceImpl implements ICartService{
     }
 
     //查询购物车商品list
-    @Override
     public ServerResponse<CartVo> list(Integer userId) {
         CartVo cartVo = this.getCartVoLimit(userId);
         return ServerResponse.createBySuccess(cartVo);
     }
 
     //全选, 反选, 单选, 单反选
-    @Override
     public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer checked, Integer productId) {
         cartMapper.checkedOrUnCheckedProduct(userId, checked, productId);
         return this.list(userId);
     }
 
     //查询购物车中产品总数量
-    @Override
     public ServerResponse<Integer> getCartProductCount(Integer userId) {
         if (userId == null) {
             return ServerResponse.createBySuccess(0);
@@ -206,6 +188,10 @@ public class CartServiceImpl implements ICartService{
     }
 
 
+
+
+
+
+
+
 }
-
-
